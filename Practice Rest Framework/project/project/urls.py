@@ -16,13 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from app1.views import PostView , Post_Detail , Post_List
+from app1.views import PostView , Post_Detail , Post_List , PostMixinListView , PostListView ,PostDestroyView, PostRetrieveView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/posts/<int:pk>/', PostView.as_view() , name = 'post_list'),
-    path('api/posts/', PostView.as_view() , name = 'post_list'),
+    #path('api/posts/<int:pk>/', PostView.as_view() , name = 'post_list'),
+    # path('api/posts/', PostView.as_view() , name = 'post_list'),
     # path('api/post-list/' , Post_List , name = 'Post_List' ),
-    path('api/posts/<int:pk>/',Post_Detail , name  ='Post_Detail'),
+    # path('api/posts/<int:pk>/',Post_Detail , name  ='Post_Detail'),
+
+    # path('api/posts/' , PostMixinListView.as_view() , name = 'PostMixinListView' ),
+    path('api/posts/' , PostListView.as_view() , name = 'PostListView' ),
+    path('api/posts/<int:pk>/',PostRetrieveView.as_view()  , name  ='PostRetrieveView'),
+    path('api/posts/<int:pk>/delete',PostDestroyView.as_view()  , name  ='PostDestroyView'),
+
+
 ]
