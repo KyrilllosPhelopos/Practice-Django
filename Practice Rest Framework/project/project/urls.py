@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from app1.views import PostView , Post_Detail , Post_List , PostMixinListView , PostListView ,PostDestroyView, PostRetrieveView
+from app1.views import (PostView , Post_Detail , Post_List , PostMixinListView ,
+                         PostListView ,PostDestroyView, PostRetrieveView , OwnerRetrieveView , 
+                         CommentRetrieveView ,)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,9 +29,13 @@ urlpatterns = [
     # path('api/posts/<int:pk>/',Post_Detail , name  ='Post_Detail'),
 
     # path('api/posts/' , PostMixinListView.as_view() , name = 'PostMixinListView' ),
-    path('api/posts/' , PostListView.as_view() , name = 'PostListView' ),
-    path('api/posts/<int:pk>/',PostRetrieveView.as_view()  , name  ='PostRetrieveView'),
-    path('api/posts/<int:pk>/delete',PostDestroyView.as_view()  , name  ='PostDestroyView'),
+    # path('api/posts/' , PostListView.as_view() , name = 'PostListView' ),
+    # path('api/posts/<int:pk>/',PostRetrieveView.as_view()  , name  ='PostRetrieveView'),
+    path('api/owners/<int:pk>/',OwnerRetrieveView.as_view()  , name  ='Owner_RetrieveView'),
+    path('api/comments/<int:pk>/',CommentRetrieveView.as_view()  , name  ='Comment_RetrieveView'),
+    # path('api/posts/<int:pk>/delete',PostDestroyView.as_view()  , name  ='PostDestroyView'),
+
+    path('api/' , include('app1.urls'))
 
 
 ]

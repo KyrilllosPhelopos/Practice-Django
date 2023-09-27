@@ -1,17 +1,21 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import PostSerializer
-from .models import Post
-from rest_framework.permissions import AllowAny
+from .serializers import PostSerializer , OwnerSerializer , CommentSerializer
+from .models import Post , Comment
+from rest_framework.permissions import AllowAny , IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse , JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.status import HTTP_200_OK , HTTP_201_CREATED , HTTP_400_BAD_REQUEST
 from rest_framework import mixins, generics
+from .permissions import IsOwnerPermission
+from rest_framework import viewsets
 # Create your views here.
 
+User = get_user_model()
 class PostView(APIView):
     permission_classes = (AllowAny ,)
     def get(self , request, *args, **kwargs):
@@ -62,7 +66,7 @@ def Post_Detail(request , pk):
     try:
         post = Post.objects.get(pk = pk) #check if the data exists
     except Post.DoesNotExist:
-        return HttpResponse("hiiiiiiiiiiii",status = 404)
+        return HttpResponse("Doesn't Exist",status = 404)
     
     if request.method == 'GET':
         serializer = PostSerializer(post) 
@@ -96,6 +100,7 @@ class PostMixinListView(mixins.ListModelMixin # to deal with get req
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated , IsOwnerPermission )
 
 class PostRetrieveView(generics.RetrieveAPIView):
     queryset = Post.objects.all()
@@ -106,6 +111,19 @@ class PostDestroyView(generics.DestroyAPIView):
     serializer_class = PostSerializer
 
         
+class OwnerRetrieveView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = OwnerSerializer
+
+class CommentRetrieveView(generics.RetrieveAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = (AllowAny, ) #tl3 3any bsabb el comma
 
 
 
